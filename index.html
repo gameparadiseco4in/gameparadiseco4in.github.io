@@ -1,0 +1,1229 @@
+<html><head><base href=".">
+<title>Game Paradise</title>
+<style>
+:root {
+  --main-bg: #1a1a1a; 
+  --card-bg: #2d2d2d;
+  --text: #ffffff;
+  --accent: #8855ff;
+}
+
+.light-theme {
+  --main-bg: #ffffff;
+  --card-bg: #f0f0f0;
+  --text: #000000;
+  --accent: #6a11cb;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+body {
+  background: var(--main-bg);
+  color: var(--text);
+  min-height: 100vh;
+}
+
+.header {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 2rem;
+  text-align: center;
+  background: linear-gradient(45deg, #2d2d2d, #1a1a1a);
+  box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+}
+
+.logo-container {
+  flex-grow: 1;
+  display: flex;
+  justify-content: center;
+}
+
+.logo {
+  font-size: 3.5rem;
+  font-weight: bold;
+  background: linear-gradient(to right, 
+    #ff0000, #ff8000, #ffff00, #00ff00, #00ffff, #0000ff, #8000ff, #ff0080);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  animation: rainbow 8s linear infinite;
+}
+
+@keyframes rainbow {
+  0% { filter: hue-rotate(0deg); }
+  100% { filter: hue-rotate(360deg); }
+}
+
+@keyframes glitch-anim {
+  0% { clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%); }
+  5% { clip-path: polygon(0 10%, 100% 0, 100% 100%, 0 90%); }
+  10% { clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%); }
+  15% { clip-path: polygon(0 15%, 100% 0, 100% 100%, 0 85%); }
+}
+
+.hacked * {
+  animation: glitch-anim 0.3s infinite alternate;
+  transition: all 0.1s ease;
+}
+
+.container {
+  max-width: 1200px;
+  margin: 2rem auto;
+  padding: 0 1rem;
+}
+
+.game-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  gap: 2rem;
+  padding: 2rem;
+}
+
+.game-card {
+  background: var(--card-bg);
+  border-radius: 10px;
+  overflow: hidden;
+  transition: transform 0.3s, box-shadow 0.3s;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+  cursor: pointer;
+  border: none;
+  width: 100%;
+  text-align: left;
+}
+
+.game-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 6px 12px rgba(0,0,0,0.3);
+}
+
+.game-card img {
+  width: 100%;
+  height: 200px;
+  object-fit: cover;
+}
+
+.game-info {
+  padding: 1rem;
+}
+
+.game-title {
+  font-size: 1.5rem;
+  margin-bottom: 0.5rem;
+  color: var(--text);
+}
+
+nav {
+  background: #2d2d2d;
+  padding: 1rem 2rem;
+}
+
+nav ul {
+  display: flex;
+  list-style: none;
+  gap: 2rem;
+  justify-content: center;
+}
+
+nav a {
+  color: var(--text);
+  text-decoration: none;
+  font-weight: 500;
+  transition: color 0.3s;
+}
+
+nav a:hover {
+  color: var(--accent);
+}
+
+.code-input-container {
+  max-width: 1200px;
+  margin: 1rem auto;
+  padding: 0 1rem;
+  display: flex;
+  justify-content: center;
+}
+
+.code-input {
+  width: 100%;
+  max-width: 400px;
+  padding: 0.5rem;
+  background: var(--card-bg);
+  color: var(--text);
+  border: 1px solid var(--accent);
+  border-radius: 5px;
+  text-align: center;
+}
+
+#soundboard-menu {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  background: var(--card-bg);
+  border-radius: 10px;
+  padding: 15px;
+  width: 250px;
+  display: none;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+  z-index: 1000;
+}
+
+#soundboard-menu h3 {
+  margin: 0;
+}
+
+#close-soundboard {
+  background: none;
+  border: none;
+  color: var(--text);
+  font-size: 20px;
+  cursor: pointer;
+}
+
+#sound-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.sound-btn {
+  background: var(--card-bg);
+  border: none;
+  color: var(--text);
+  padding: 10px;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.sound-btn:hover {
+  background: var(--accent);
+  color: var(--main-bg);
+}
+
+.search-container {
+  position: absolute;
+  right: 2rem;
+}
+
+.search-input {
+  padding: 0.5rem;
+  border-radius: 5px;
+  border: 1px solid var(--accent);
+  background: var(--card-bg);
+  color: var(--text);
+  width: 250px;
+}
+
+#water-overlay {
+  position: fixed;
+  bottom: 0;  
+  left: 0;
+  width: 100%;
+  height: 0; 
+  background: linear-gradient(to top, rgba(0, 128, 255, 0.7), rgba(0, 64, 255, 0.9));  
+  z-index: 9999;
+  overflow: hidden;
+  transition: height 10s ease-in-out; 
+}
+
+@keyframes swimFish {
+  0% { transform: translateX(-100%) rotateY(0deg); }
+  100% { transform: translateX(100vw) rotateY(180deg); }
+}
+
+@keyframes bubbleRise {
+  0% { 
+    opacity: 0.7;
+    transform: translateY(0) scale(0.5);
+  }
+  100% { 
+    opacity: 0;
+    transform: translateY(-100vh) scale(2);
+  }
+}
+
+.fish {
+  position: absolute;
+  width: 50px;
+  height: 30px;
+  background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 60"><path d="M10 30 Q50 10, 90 30 Q50 50, 10 30" fill="%23silver" stroke="%23gray" stroke-width="3"/><polygon points="90,30 100,20 100,40" fill="%23silver"/><ellipse cx="25" cy="25" rx="5" ry="3" fill="black"/></svg>');
+  background-size: contain;
+  background-repeat: no-repeat;
+  animation: swimFish linear infinite;
+  filter: drop-shadow(2px 2px 2px rgba(0,0,0,0.3));
+}
+
+.bubble {
+  position: absolute;
+  width: 10px;
+  height: 10px;
+  background: rgba(255,255,255,0.4);
+  border-radius: 50%;
+  animation: bubbleRise linear infinite;
+}
+</style>
+</head>
+<body>
+  <header class="header">
+    <div class="logo-container">
+      <h1 class="logo">Game Paradise</h1>
+    </div>
+    <div class="search-container">
+      <input type="text" class="search-input" placeholder="Search games...">
+    </div>
+  </header>
+  
+  <nav>
+    <ul>
+      <li><a href="https://www.mellekoster.nl/wishulp/breuken/">Home</a></li>
+      <li><a href="https://www.mellekoster.nl/wishulp/breuken/categories/" target="_blank">Categories</a></li>
+      <li><a href="https://www.mellekoster.nl/wishulp/breuken/about/" target="_blank">About</a></li>
+    </ul>
+  </nav>
+
+  <div class="container">
+    <div class="game-grid">
+      <button class="game-card minecraft-btn">
+        <img src="https://www.mellekoster.nl/wishulp/breuken/minecraft.jpg" alt="Minecraft">
+        <div class="game-info">
+          <h3 class="game-title">Minecraft</h3>
+        </div>
+      </button>
+      <button class="game-card pvz-btn">
+        <img src="https://www.mellekoster.nl/wishulp/breuken/plantsvszombies.png" alt="Plants vs Zombies">
+        <div class="game-info">
+          <h3 class="game-title">Plants vs Zombies</h3>
+        </div>
+      </button>
+      <button class="game-card incredibox-btn">
+        <img src="https://www.mellekoster.nl/wishulp/breuken/incredibox.jpeg" alt="Incredibox">
+        <div class="game-info">
+          <h3 class="game-title">Incredibox</h3>
+        </div>
+      </button>
+      <button class="game-card recoil-btn">
+        <img src="https://www.mellekoster.nl/wishulp/breuken/recoil.png" alt="Recoil">
+        <div class="game-info">
+          <h3 class="game-title">Recoil</h3>
+        </div>
+      </button>
+      <button class="game-card block-blast-btn">
+        <img src="https://www.mellekoster.nl/wishulp/breuken/blockblast.png" alt="Block Blast">
+        <div class="game-info">
+          <h3 class="game-title">Block Blast</h3>
+        </div>
+      </button>
+      <button class="game-card drive-mad-btn">
+        <img src="https://mellekoster.nl/storage/images/games/drivemad.png" alt="Drive Mad">
+        <div class="game-info">
+          <h3 class="game-title">Drive Mad</h3>
+        </div>
+      </button>
+      <button class="game-card poly-track-btn">
+        <img src="https://mellekoster.nl/storage/images/games/polytrack.png" alt="Poly Track">
+        <div class="game-info">
+          <h3 class="game-title">Poly Track</h3>
+        </div>
+      </button>
+      <button class="game-card stickman-hook-btn">
+        <img src="https://mellekoster.nl/storage/images/games/stickmanhook.jpg" alt="Stickman Hook">
+        <div class="game-info">
+          <h3 class="game-title">Stickman Hook</h3>
+        </div>
+      </button>
+      <button class="game-card hole-io-btn">
+        <img src="https://mellekoster.nl/storage/images/games/holeio.jpg" alt="Hole.io">
+        <div class="game-info">
+          <h3 class="game-title">Hole.io</h3>
+        </div>
+      </button>
+      <button class="game-card" onclick="window.open('https://ozh.github.io/cookieclicker/', '_blank')">
+        <img src="https://www.mellekoster.nl/wishulp/breuken/cookieclicker.png" alt="Cookie Clicker">
+        <div class="game-info">
+          <h3 class="game-title">Cookie Clicker</h3>
+        </div>
+      </button>
+      <button class="game-card subway-surfers-btn">
+        <img src="https://www.mellekoster.nl/wishulp/breuken/subwaysurfers.jpg" alt="Subway Surfers">
+        <div class="game-info">
+          <h3 class="game-title">Subway Surfers</h3>
+        </div>
+      </button>
+      <button class="game-card monkey-mart-btn">
+        <img src="https://mellekoster.nl/storage/images/games/monkeymart.png" alt="Monkey Mart">
+        <div class="game-info">
+          <h3 class="game-title">Monkey Mart</h3>
+        </div>
+      </button>
+      <button class="game-card sausage-flip-btn">
+        <img src="https://mellekoster.nl/storage/images/games/sausageflip.jpg" alt="Sausage Flip">
+        <div class="game-info">
+          <h3 class="game-title">Sausage Flip</h3>
+        </div>
+      </button>
+      <button class="game-card bitlife-btn">
+        <img src="https://mellekoster.nl/storage/images/games/bitlife.jpg" alt="BitLife">
+        <div class="game-info">
+          <h3 class="game-title">BitLife</h3>
+        </div>
+      </button>
+      <button class="game-card level-devil-btn">
+        <img src="https://mellekoster.nl/storage/images/games/leveldevil.jpg" alt="Level Devil">
+        <div class="game-info">
+          <h3 class="game-title">Level Devil</h3>
+        </div>
+      </button>
+      <button class="game-card gobble-btn">
+        <img src="https://mellekoster.nl/storage/images/games/gobble.png" alt="Gobble">
+        <div class="game-info">
+          <h3 class="game-title">Gobble</h3>
+        </div>
+      </button>
+      <button class="game-card tag-btn">
+        <img src="https://mellekoster.nl/storage/images/games/tag.png" alt="Tag">
+        <div class="game-info">
+          <h3 class="game-title">Tag</h3>
+        </div>
+      </button>
+      <button class="game-card stickman-climb-btn">
+        <img src="https://mellekoster.nl/storage/images/games/stickmanclimb2.png" alt="Stickman Climb 2">
+        <div class="game-info">
+          <h3 class="game-title">Stickman Climb 2</h3>
+        </div>
+      </button>
+      <button class="game-card monster-tracks-btn">
+        <img src="https://mellekoster.nl/storage/images/games/monstertracks.png" alt="Monster Tracks">
+        <div class="game-info">
+          <h3 class="game-title">Monster Tracks</h3>
+        </div>
+      </button>
+      <button class="game-card buildnow-btn">
+        <img src="https://mellekoster.nl/storage/images/games/buildnowgg.jpg" alt="Build Now GG">
+        <div class="game-info">
+          <h3 class="game-title">Build Now GG</h3>
+        </div>
+      </button>
+      <button class="game-card survival-race-btn">
+        <img src="https://mellekoster.nl/storage/images/games/survivalrace.png" alt="Survival Race">
+        <div class="game-info">
+          <h3 class="game-title">Survival Race</h3>
+        </div>
+      </button>
+      <button class="game-card fnaf-btn">
+        <img src="https://mellekoster.nl/storage/images/games/fnaf.png" alt="FNAF">
+        <div class="game-info">
+          <h3 class="game-title">FNAF</h3>
+        </div>
+      </button>
+      <button class="game-card space-waves-btn">
+        <img src="https://mellekoster.nl/storage/images/games/spacewaves.jpeg" alt="Space Waves">
+        <div class="game-info">
+          <h3 class="game-title">Space Waves</h3>
+        </div>
+      </button>
+      <button class="game-card slope3-btn">
+        <img src="https://mellekoster.nl/storage/images/games/slope3.jpg" alt="Slope 3">
+        <div class="game-info">
+          <h3 class="game-title">Slope 3</h3>
+        </div>
+      </button>
+      <button class="game-card blumgi-slime-btn">
+        <img src="https://mellekoster.nl/storage/images/games/blumgislime.png" alt="Blumgi Slime">
+        <div class="game-info">
+          <h3 class="game-title">Blumgi Slime</h3>
+        </div>
+      </button>
+      <button class="game-card ragdoll-hit-btn">
+        <img src="https://mellekoster.nl/storage/images/games/ragdollhit.jpg" alt="Ragdoll Hit">
+        <div class="game-info">
+          <h3 class="game-title">Ragdoll Hit</h3>
+        </div>
+      </button>
+      <button class="game-card ragdoll-archers-btn">
+        <img src="https://mellekoster.nl/storage/images/games/ragdollarchers.png" alt="Ragdoll Archers">
+        <div class="game-info">
+          <h3 class="game-title">Ragdoll Archers</h3>
+        </div>
+      </button>
+      <button class="game-card poor-eddie-btn">
+        <img src="https://mellekoster.nl/storage/images/games/pooreddie.png" alt="Poor Eddie">
+        <div class="game-info">
+          <h3 class="game-title">Poor Eddie</h3>
+        </div>
+      </button>
+      <button class="game-card geometry-dash-btn">
+        <img src="https://mellekoster.nl/storage/images/games/geometrydash.jpg" alt="Geometry Dash">
+        <div class="game-info">
+          <h3 class="game-title">Geometry Dash</h3>
+        </div>
+      </button>
+      <button class="game-card escape-road-btn">
+        <img src="https://mellekoster.nl/storage/images/games/escaperoad.png" alt="Escape Road">
+        <div class="game-info">
+          <h3 class="game-title">Escape Road</h3>
+        </div>
+      </button>
+      <button class="game-card crossy-road-btn">
+        <img src="https://mellekoster.nl/storage/images/games/crossyroad.png" alt="Crossy Road">
+        <div class="game-info">
+          <h3 class="game-title">Crossy Road</h3>
+        </div>
+      </button>
+      <button class="game-card infinite-craft-btn">
+        <img src="https://mellekoster.nl/storage/images/games/infinitecraft.png" alt="Infinite Craft">
+        <div class="game-info">
+          <h3 class="game-title">Infinite Craft</h3>
+        </div>
+      </button>
+      <button class="game-card super-hot-btn">
+        <img src="https://mellekoster.nl/storage/images/games/superhot.png" alt="Super Hot">
+        <div class="game-info">
+          <h3 class="game-title">Super Hot</h3>
+        </div>
+      </button>
+      <button class="game-card snow-rider-btn">
+        <img src="https://mellekoster.nl/storage/images/games/snowrider3d.png" alt="Snow Rider 3D">
+        <div class="game-info">
+          <h3 class="game-title">Snow Rider 3D</h3>
+        </div>
+      </button>
+      <button class="game-card time-shooter-btn">
+        <img src="https://mellekoster.nl/storage/images/games/timeshooter3.png" alt="Time Shooter 3">
+        <div class="game-info">
+          <h3 class="game-title">Time Shooter 3</h3>
+        </div>
+      </button>
+      <button class="game-card dinosaur-game-btn">
+        <img src="https://mellekoster.nl/storage/images/games/chromedinosaurgame.jpg" alt="Dinosaur Game">
+        <div class="game-info">
+          <h3 class="game-title">Dinosaur Game</h3>
+        </div>
+      </button>
+      <button class="game-card drift-hunters-btn">
+        <img src="https://mellekoster.nl/storage/images/games/drifthunters.png" alt="Drift Hunters">
+        <div class="game-info">
+          <h3 class="game-title">Drift Hunters</h3>
+        </div>
+      </button>
+      <button class="game-card escape-road-2-btn">
+        <img src="https://mellekoster.nl/storage/images/games/escaperoad2.png" alt="Escape Road 2">
+        <div class="game-info">
+          <h3 class="game-title">Escape Road 2</h3>
+        </div>
+      </button>
+      <button class="game-card drift-boss-btn">
+        <img src="https://ikhouvankaas.github.io/storage/images/driftboss.jpg" alt="Drift Boss">
+        <div class="game-info">
+          <h3 class="game-title">Drift Boss</h3>
+        </div>
+      </button>
+      <button class="game-card paper-io-btn">
+        <img src="https://ikhouvankaas.github.io/storage/images/paperio2.jpg" alt="Paper.io 2">
+        <div class="game-info">
+          <h3 class="game-title">Paper.io 2</h3>
+        </div>
+      </button>
+      <button class="game-card dreadhead-parkour-btn">
+        <img src="https://ikhouvankaas.github.io/storage/images/dreadheadparkour.jpg" alt="Dreadhead Parkour">
+        <div class="game-info">
+          <h3 class="game-title">Dreadhead Parkour</h3>
+        </div>
+      </button>
+      <button class="game-card idle-ants-btn">
+        <img src="https://ikhouvankaas.github.io/storage/images/idleants.jpg" alt="Idle Ants">
+        <div class="game-info">
+          <h3 class="game-title">Idle Ants</h3>
+        </div>
+      </button>
+      <button class="game-card granny-btn">
+        <img src="https://ikhouvankaas.github.io/storage/images/granny.jpg" alt="Granny">
+        <div class="game-info">
+          <h3 class="game-title">Granny</h3>
+        </div>
+      </button>
+      <button class="game-card vex-games-btn">
+        <img src="https://ikhouvankaas.github.io/storage/images/vexgame.jpg" alt="Vex Games">
+        <div class="game-info">
+          <h3 class="game-title">Vex Games</h3>
+        </div>
+      </button>
+      <button class="game-card tiny-fishing-btn">
+        <img src="https://ikhouvankaas.github.io/storage/images/tinyfishing.jpg" alt="Tiny Fishing">
+        <div class="game-info">
+          <h3 class="game-title">Tiny Fishing</h3>
+        </div>
+      </button>
+      <button class="game-card baby-in-yellow-btn">
+        <img src="https://i.ytimg.com/vi/h9Qj0-04SeQ/maxresdefault.jpg" alt="Baby in Yellow">
+        <div class="game-info">
+          <h3 class="game-title">Baby in Yellow</h3>
+        </div>
+      </button>
+      <button class="game-card elastic-man-btn">
+        <img src="https://digistatement.com/wp-content/uploads/2021/03/face-mutilation-1140x570.jpg" alt="Elastic Man">
+        <div class="game-info">
+          <h3 class="game-title">Elastic Man</h3>
+        </div>
+      </button>
+    </div>
+    <div class="code-input-container">
+      <input type="text" class="code-input" placeholder="Enter code here...">
+    </div>
+  </div>
+  <div id="soundboard-menu" style="
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    background: var(--card-bg);
+    border-radius: 10px;
+    padding: 15px;
+    width: 250px;
+    display: none;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+    z-index: 1000;
+  ">
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+      <h3>Soundboard</h3>
+      <button id="close-soundboard" style="
+        background: none;
+        border: none;
+        color: var(--text);
+        font-size: 20px;
+        cursor: pointer;
+      ">&#x2716;</button>
+    </div>
+    <div id="sound-list" style="display: flex; flex-direction: column; gap: 10px;">
+      <button class="sound-btn" data-sound="fart">Fart Sound</button>
+      <button class="sound-btn" data-sound="airhorn">Airhorn</button>
+      <button class="sound-btn" data-sound="laugh">Evil Laugh</button>
+      <button class="sound-btn" data-sound="drumroll">Drumroll</button>
+      <button class="sound-btn" data-sound="tada">Ta-Da</button>
+      <button class="sound-btn more-soundboard-btn" style="background: var(--accent); color: var(--main-bg);">
+        More Sounds
+      </button>
+    </div>
+  </div>
+
+  <div class="water-overlay" id="water-overlay"></div>
+
+<script>
+let infiniteExplosionInterval = null;
+document.querySelectorAll('nav a').forEach(anchor => {
+  anchor.addEventListener('click', function (e) {
+    e.preventDefault();
+    if (this.getAttribute('target') === '_blank') {
+      window.open(this.getAttribute('href'), '_blank');
+    } else {
+      window.location.href = this.getAttribute('href');
+    }
+  });
+});
+var urlMinecraft = "https://eaglercraft.com/mc/1.8.8/";
+var urlPvz = "https://pvz.ee/iframe.php";
+var urlIncred = "https://21g-mahran.github.io/incredibox/";
+var urlBlockBlast = "https://blockblast-unblocked.github.io/";
+var urlDriveMad = "https://far0ffgames.github.io/Strg/drive-mad/game/index.html";
+var urlPolyTrack = "https://iammyguy21th.github.io/polytrack.3/";
+var urlStickmanHook = "https://stickmanhook.gitlab.io/file/";
+var urlHoleIo = "https://classroomjq.github.io/holeio/";
+var urlSubwaySurfers = "https://gamesbun.github.io/subway/index.html";
+var urlMonkeyMart = "https://mounteverestgames.github.io/monkey-mart/";
+var urlSausageFlip = "https://sausage-flip.github.io/games/sausage-flip/index.html";
+var urlBitlife = "https://gt00001.ourcrazysites.com/gg/bitlife/";
+var urlLevelDevil = "https://classroom6x.gitlab.io/level-devil/";
+var urlGobble = "https://narrow-one.github.io/n4/gobble/";
+var urlTag = "https://narrow-one.github.io/n3/tag/";
+var urlStickmanClimb = "https://ubg77.github.io/stickman-climb-2/";
+var urlMonsterTracks = "https://unblockedgamesfree.github.io/monster-tracks/";
+var urlRecoil = "https://bestofgooglesites.com/games/recoil/index.html";
+var urlBuildNow = "https://bestofgooglesites.com/games/buildnow-gg/index.html";
+var urlSurvivalRace = "https://www.survivalrace.net/content/uploads/survival-race/";
+var urlFnaf = "https://yexfr.github.io/fnaf/fnaf-1/index.html";
+var urlSpaceWaves = 'https://spacewaves.io/game/SpaceWaves/index.html';
+var urlSlope3 = "https://lbannana.github.io/Slope3/index.html";
+var urlBlumgiSlime = "https://23azostore.github.io/s2/blumgi-slime/";
+var urlRagdollHit = "https://map-l.github.io/play/ragdollhit/";
+var urlRagdollArchers = "https://map-l.github.io/play/ragdollarchers/";
+var urlPoorEddie = "https://rebemanae.github.io/poor-eddie/";
+var urlGeometryDash = "https://geometrydash3d.io/game/geometry-dash-lite/";
+var urlEscapeRoad = "https://azgames.io/game/escape-road/";
+var urlCrossyRoad = "https://azgames.io/game/crossy-road/";
+var urlInfiniteCraft = "https://infinitecraft.gg/infinite-craft/";
+var urlSuperHot = "https://unblocked-game76.com/gg/superhot/";
+var urlSnowRider = "https://snow-rider3d-cic.pages.dev/";
+var urlSimon = "https://example-simon-gun-game.com";
+var urlTimeShooter3 = "https://classroom-opensocial.googleusercontent.com/gadgets/ifr?url=https://groups.google.com/u/6/group/54r7m5resdndren65dx/attach/59d41d61a91b0/ts64.xml?part=0.1&view=1&authuser=6&container=ig";
+var urlDinosaurGame = "https://chrome-trex.github.io/Normal-Mode/";
+var urlDriftHunters = "https://drift-hunters.io/game/drift-hunters/";
+var urlEscapeRoad2 = "https://game.azgame.io/escape-road-2/";
+var urlDriftBoss = "https://www.hoodamath.com/mobile/games/drift-boss/game.html?nocheckorient=1";
+var urlPaperIo2 = "https://images-opensocial.googleusercontent.com/gadgets/ifr?url=https://cdn.jsdelivr.net/gh/bobydob/JSEngine@b8b8a03997f38305098c2f2f5fe14907463cd23b/build/ppo2/ppo2.xml&container=ig";
+var urlDreadheadParkour = "https://unblockedgamesfree.github.io/dreadhead-parkour/";
+var urlIdleAnts = "https://unblockedgamesfree.github.io/idle-ants/";
+var urlGranny = "https://tg3t9j1hby-opensocial.googleusercontent.com/gadgets/ifr?url=https://groups.google.com/u/6/group/hornedo-middle-school/attach/18a50ff525789/godfgld46d46odfgldgoxxx-google-net-x46x46oxlssaawr467.xml?part=0.1&view=1&authuser=6&container=ig";
+var urlVexGames = "https://ikhouvankaas.github.io/vexgames/";
+var urlTinyFishing = "https://tiny-fishing.io/iframe/index.html";
+var urlBabyInYellow = "https://gnhustgames.org/babyinyellow-source/";
+var urlElasticMan = "https://d21u3ic0kp9e91.cloudfront.net/elasticman/0/index.html";
+function createGameWindow(url, buttonSelector) {
+  var win;
+  const button = document.querySelector(buttonSelector);
+  if (button) {
+    button.onclick = function () {
+      if (win) {
+        win.focus();
+      } else {
+        win = window.open();
+        if (win) {
+          win.document.body.style.margin = '0';
+          win.document.body.style.height = '100vh';
+          var iframe = win.document.createElement('iframe');
+          iframe.style.border = 'none';
+          iframe.style.width = '100%';
+          iframe.style.height = '100%';
+          iframe.style.margin = '0';
+          iframe.src = url;
+          win.document.body.appendChild(iframe);
+          var interval = setInterval(function () {
+            if (win.closed) {
+              clearInterval(interval);
+              win = undefined;
+            }
+          }, 500);
+        }
+      }
+    };
+  }
+}
+createGameWindow(urlTimeShooter3, '.time-shooter-btn');
+createGameWindow(urlInfiniteCraft, '.infinite-craft-btn');
+createGameWindow(urlMinecraft, '.minecraft-btn');
+createGameWindow(urlPvz, '.pvz-btn');
+createGameWindow(urlIncred, '.incredibox-btn');
+createGameWindow(urlBlockBlast, '.block-blast-btn');
+createGameWindow(urlDriveMad, '.drive-mad-btn');
+createGameWindow(urlPolyTrack, '.poly-track-btn');
+createGameWindow(urlStickmanHook, '.stickman-hook-btn');
+createGameWindow(urlHoleIo, '.hole-io-btn');
+createGameWindow(urlSubwaySurfers, '.subway-surfers-btn');
+createGameWindow(urlMonkeyMart, '.monkey-mart-btn');
+createGameWindow(urlSausageFlip, '.sausage-flip-btn');
+createGameWindow(urlBitlife, '.bitlife-btn');
+createGameWindow(urlLevelDevil, '.level-devil-btn');
+createGameWindow(urlGobble, '.gobble-btn');
+createGameWindow(urlTag, '.tag-btn');
+createGameWindow(urlStickmanClimb, '.stickman-climb-btn');
+createGameWindow(urlMonsterTracks, '.monster-tracks-btn');
+createGameWindow(urlRecoil, '.recoil-btn');
+createGameWindow(urlBuildNow, '.buildnow-btn');
+createGameWindow(urlSurvivalRace, '.survival-race-btn');
+createGameWindow(urlFnaf, '.fnaf-btn');
+createGameWindow(urlSpaceWaves, '.space-waves-btn');
+createGameWindow(urlSlope3, '.slope3-btn');
+createGameWindow(urlBlumgiSlime, '.blumgi-slime-btn');
+createGameWindow(urlRagdollHit, '.ragdoll-hit-btn');
+createGameWindow(urlRagdollArchers, '.ragdoll-archers-btn');
+createGameWindow(urlPoorEddie, '.poor-eddie-btn');
+createGameWindow(urlGeometryDash, '.geometry-dash-btn');
+createGameWindow(urlEscapeRoad, '.escape-road-btn');
+createGameWindow(urlCrossyRoad, '.crossy-road-btn');
+createGameWindow(urlSuperHot, '.super-hot-btn');
+createGameWindow(urlSnowRider, '.snow-rider-btn');
+createGameWindow(urlSimon, '.simon-btn');
+createGameWindow(urlTimeShooter3, '.time-shooter-3-btn');
+createGameWindow(urlDinosaurGame, '.dinosaur-game-btn');
+createGameWindow(urlDriftHunters, '.drift-hunters-btn');
+createGameWindow(urlEscapeRoad2, '.escape-road-2-btn');
+createGameWindow(urlDriftBoss, '.drift-boss-btn');
+createGameWindow(urlPaperIo2, '.paper-io-btn');
+createGameWindow(urlDreadheadParkour, '.dreadhead-parkour-btn');
+createGameWindow(urlIdleAnts, '.idle-ants-btn');
+createGameWindow(urlGranny, '.granny-btn');
+createGameWindow(urlVexGames, '.vex-games-btn');
+createGameWindow(urlTinyFishing, '.tiny-fishing-btn');
+createGameWindow(urlBabyInYellow, '.baby-in-yellow-btn');
+createGameWindow(urlElasticMan, '.elastic-man-btn');
+const soundbank = {
+  fart: 'https://www.myinstants.com/media/sounds/dry-fart.mp3',
+  airhorn: 'https://www.myinstants.com/media/sounds/dj-airhorn-sound-effect-kingbeatz_1.mp3',
+  laugh: 'https://www.myinstants.com/media/sounds/vincent-price-laugh.mp3',
+  drumroll: 'https://www.myinstants.com/media/sounds/drumroll-opening.mp3',
+  tada: 'https://www.myinstants.com/media/sounds/ta-da_yrvBrlS.mp3'
+};
+function createInfiniteExplosion() {
+  const explosion = document.createElement('div');
+  explosion.innerHTML = `
+    <svg viewBox="0 0 100 100" data-infinite-explosion style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 9999; pointer-events: none;">
+      <circle cx="50" cy="50" r="0" fill="orange" opacity="0.7">
+        <animate attributeName="r" from="0" to="100" dur="1.2s" fill="freeze" />
+        <animate attributeName="opacity" from="0.7" to="0" begin="0.6s" dur="0.6s" fill="freeze" />
+      </circle>
+      <circle cx="50" cy="50" r="0" fill="red" opacity="0.6">
+        <animate attributeName="r" from="0" to="80" dur="1s" fill="freeze" />
+        <animate attributeName="opacity" from="0.6" to="0" begin="0.5s" dur="0.5s" fill="freeze" />
+      </circle>
+      <circle cx="50" cy="50" r="0" fill="yellow" opacity="0.5">
+        <animate attributeName="r" from="0" to="60" dur="0.8s" fill="freeze" />
+        <animate attributeName="opacity" from="0.5" to="0" begin="0.4s" dur="0.4s" fill="freeze" />
+      </circle>
+      ${[...Array(20)].map(() => `
+        <circle 
+          cx="${50 + (Math.random() * 40 - 20)}" 
+          cy="${50 + (Math.random() * 40 - 20)}" 
+          r="0" 
+          fill="rgba(255,165,0,0.5)"
+        >
+          <animate attributeName="r" from="0" to="${Math.random() * 15}" dur="${Math.random() * 0.8 + 0.6}s" fill="freeze" />
+          <animate attributeName="opacity" from="1" to="0" begin="${Math.random() * 0.6}s" dur="0.4s" fill="freeze" />
+        </circle>
+      `).join('')}
+    </svg>
+  `;
+  document.body.appendChild(explosion);
+  infiniteExplosionInterval = setTimeout(() => {
+    document.body.removeChild(explosion);
+    createInfiniteExplosion();
+  }, 2000);
+}
+function handleSpecialCode(code) {
+  if (code.toLowerCase() === 'launch:beta_site') {
+    window.location.href = 'https://websim.ai/@longrainbow0616979686/game-paradise-4/17';
+  }
+  if (code.toLowerCase() === 'source:minecraft') {
+    window.open('https://eaglercraft.com/mc/1.8.8/', '_blank');
+  }
+  if (code.toLowerCase() === 'launch:moregamesbygooglesites') {
+    window.open('https://sites.google.com/view/games-fio/home', '_blank');
+  }
+  if (code.toLowerCase() === 'switch:light') {
+    document.body.classList.toggle('light-theme');
+  }
+  if (code.toLowerCase() === 'switch:dark') {
+    if (document.body.classList.contains('light-theme')) {
+      document.body.classList.remove('light-theme');
+    }
+  }
+  if (code.toLowerCase() === 'givememycodes') {
+    window.open('https://www.veranderditnaardesitemetcodes.nl', '_blank');
+  }
+  if (code.toLowerCase() === 'explo') {  
+    const explosion = document.createElement('div');
+    explosion.innerHTML = `
+      <svg viewBox="0 0 100 100" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 9999; pointer-events: none;">
+        <circle cx="50" cy="50" r="0" fill="orange" opacity="0.7">
+          <animate attributeName="r" from="0" to="100" dur="1.2s" fill="freeze" />
+          <animate attributeName="opacity" from="0.7" to="0" begin="0.6s" dur="0.6s" fill="freeze" />
+        </circle>
+        <circle cx="50" cy="50" r="0" fill="red" opacity="0.6">
+          <animate attributeName="r" from="0" to="80" dur="1s" fill="freeze" />
+          <animate attributeName="opacity" from="0.6" to="0" begin="0.5s" dur="0.5s" fill="freeze" />
+        </circle>
+        <circle cx="50" cy="50" r="0" fill="yellow" opacity="0.5">
+          <animate attributeName="r" from="0" to="60" dur="0.8s" fill="freeze" />
+          <animate attributeName="opacity" from="0.5" to="0" begin="0.4s" dur="0.4s" fill="freeze" />
+        </circle>
+        ${[...Array(20)].map(() => `
+          <circle 
+            cx="${50 + (Math.random() * 40 - 20)}" 
+            cy="${50 + (Math.random() * 40 - 20)}" 
+            r="0" 
+            fill="rgba(255,165,0,0.5)"
+          >
+            <animate attributeName="r" from="0" to="${Math.random() * 15}" dur="${Math.random() * 0.8 + 0.6}s" fill="freeze" />
+            <animate attributeName="opacity" from="1" to="0" begin="${Math.random() * 0.6}s" dur="0.4s" fill="freeze" />
+          </circle>
+        `).join('')}
+      </svg>
+    `;
+    document.body.appendChild(explosion);
+    setTimeout(() => {
+      document.body.removeChild(explosion);
+    }, 2000);
+  }
+  if (code.toLowerCase() === 'explo_infinite') {  
+    createInfiniteExplosion();
+  }
+  if (code.toLowerCase() === 'explo_stop') {  
+    if (infiniteExplosionInterval) {
+      clearTimeout(infiniteExplosionInterval);
+      infiniteExplosionInterval = null;
+      const explosions = document.querySelectorAll('svg[data-infinite-explosion]');
+      explosions.forEach(el => el.remove());
+    }
+  }
+  if (code.toLowerCase() === 'simon') {
+    const gunContainer = document.createElement('div');
+    gunContainer.innerHTML = `
+      <div style="
+        position: fixed; 
+        bottom: 20px; 
+        left: 50%; 
+        transform: translateX(-50%); 
+        z-index: 9999;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+      ">
+        <div style="
+          width: 50px;
+          height: 200px;
+          background: url('https://www.pngkey.com/png/full/114-1148477_pixel-art-pistol-pixel-art-gun.png') no-repeat center;
+          transform: rotate(0deg);
+          transform-origin: bottom center;
+          transition: transform 0.2s;
+        " id="gun-barrel"></div>
+        <div style="
+          width: 30px;
+          height: 50px;
+          background: #444;
+        "></div>
+        <div id="bullet" style="
+          display: none;
+          width: 10px;
+          height: 10px;
+          background: rgba(255, 0, 0, 1);
+          position: absolute;
+          border-radius: 50%;
+          transition: all 0.5s linear;
+        "></div>
+      </div>
+   `;
+    document.body.appendChild(gunContainer);
+    const gunBarrel = document.getElementById('gun-barrel');
+    const bullet = document.getElementById('bullet');
+    function fireBullet() {
+      gunBarrel.style.transform = 'rotate(-20deg)';
+      bullet.style.display = 'block';
+      bullet.style.left = '50%';
+      bullet.style.bottom = '270px';
+      setTimeout(() => {
+        bullet.style.transform = 'translateX(-50%) translateY(-500%)';
+        bullet.style.opacity = '0';
+      }, 100);
+      setTimeout(() => {
+        gunBarrel.style.transform = 'rotate(0deg)';
+        bullet.style.display = 'none';
+        bullet.style.transform = 'translateX(-50%) translateY(0)';
+        bullet.style.opacity = '1';
+      }, 500);
+    }
+    fireBullet();
+  }
+  if (code.toLowerCase() === 'sam') {
+    document.body.classList.add('hacked');
+    document.body.style.transform = 'rotate(5deg) skew(10deg, 5deg)';
+    document.body.style.filter = 'contrast(200%) brightness(150%)';
+    const hackOverlay = document.createElement('div');
+    hackOverlay.innerHTML = `
+      <div style="
+        position: fixed; 
+        top: 0; 
+        left: 0; 
+        width: 100%; 
+        height: 100%; 
+        background: rgba(255,0,0,0.7); 
+        color: white; 
+        display: flex; 
+        justify-content: center; 
+        align-items: center; 
+        font-size: 5rem; 
+        z-index: 9999;
+        text-shadow: 0 0 20px black;
+      " id="hack-overlay">
+        YOU ARE HACKED!!
+      </div>
+    `;
+    document.body.appendChild(hackOverlay);
+    function addGlitchEffect() {
+      const glitch = document.createElement('div');
+      glitch.style.cssText = `
+        position: fixed;
+        top: ${Math.random() * 100}%;
+        left: ${Math.random() * 100}%;
+        width: ${Math.random() * 200}px;
+        height: ${Math.random() * 200}px;
+        background: rgba(255,0,0,0.5);
+        transform: rotate(${Math.random() * 360}deg);
+        z-index: 9998;
+      `;
+      document.body.appendChild(glitch);
+    }
+    for (let i = 0; i < 50; i++) {
+      addGlitchEffect();
+    }
+  }
+  if (code.toLowerCase() === 'samsite') {
+    window.open('https://www.mellekoster.nl/sam/', '_blank');
+  }
+  if (code.toLowerCase() === 'fart') {
+    const audio = new Audio('https://www.myinstants.com/media/sounds/dry-fart.mp3');
+    audio.play();
+  }
+  if (code.toLowerCase() === 'soundboard') {
+    const soundboardMenu = document.getElementById('soundboard-menu');
+    soundboardMenu.style.display = soundboardMenu.style.display === 'none' ? 'block' : 'none';
+  }
+  if (code.toLowerCase() === 'sb') {
+    const soundboardMenu = document.getElementById('soundboard-menu');
+    soundboardMenu.style.display = soundboardMenu.style.display === 'none' ? 'block' : 'none';
+  }
+  if (code.toLowerCase() === 'sd') {
+    const soundboardMenu = document.getElementById('soundboard-menu');
+    soundboardMenu.style.display = soundboardMenu.style.display === 'none' ? 'block' : 'none';
+  }
+  if (code.toLowerCase() === 'water') {
+    createWaterEffect();
+  }
+  if (code.toLowerCase() === 'givememyowncode') {
+    window.open('https://forms.gle/73f2zMrXNAKEBaJK7', '_blank');
+  }
+  if (code.toLowerCase() === 'opensource') {
+    window.open('https://github.com/IKHouvankaas/mellekoster.nl-wishulp-breuken-/tree/main', '_blank');
+  }
+  if (code.toLowerCase() === 'rinus') {
+    const rinusMessage = document.createElement('div');
+    rinusMessage.style.cssText = `
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.8);
+      color: red;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-size: 3rem;
+      text-align: center;
+      z-index: 9999;
+      padding: 20px;
+      font-weight: bold;
+    `;
+    rinusMessage.textContent = 'English or Spanish if you move you are gay!';
+    document.body.appendChild(rinusMessage);
+
+    setTimeout(() => {
+      document.body.removeChild(rinusMessage);
+    }, 5000);
+  }
+  if (code.toLowerCase() === 'm30w') {
+    spawnCats();
+  }
+}
+
+function spawnCats() {
+  const gameGrid = document.querySelector('.game-grid');
+  const catEmojis = ['🐱', '😺', '😻', '😸', '😽'];
+  let mouseX = 0, mouseY = 0;
+
+  // Track mouse position
+  document.addEventListener('mousemove', (e) => {
+    mouseX = e.clientX;
+    mouseY = e.clientY;
+  });
+
+  for (let i = 0; i < 3; i++) {
+    const cat = document.createElement('div');
+    cat.style.cssText = `
+      position: fixed;
+      font-size: 50px;
+      z-index: 9999;
+      cursor: pointer;
+      transition: all 0.5s ease;
+    `;
+      
+    cat.textContent = catEmojis[Math.floor(Math.random() * catEmojis.length)];
+      
+    // Random initial position
+    cat.style.left = `${Math.random() * window.innerWidth}px`;
+    cat.style.top = `${Math.random() * window.innerHeight}px`;
+
+    document.body.appendChild(cat);
+
+    // Function to make cat jump and interact with game icons
+    function catMischief() {
+      const gameCards = document.querySelectorAll('.game-card');
+      let cardUnderMouse = null;
+
+      // Find game card under mouse
+      gameCards.forEach(card => {
+        const rect = card.getBoundingClientRect();
+        if (
+          mouseX >= rect.left && 
+          mouseX <= rect.right && 
+          mouseY >= rect.top && 
+          mouseY <= rect.bottom
+        ) {
+          cardUnderMouse = card;
+        }
+      });
+
+      // Move cat towards game card under mouse or a random card
+      const targetCard = cardUnderMouse || gameCards[Math.floor(Math.random() * gameCards.length)];
+      const cardRect = targetCard.getBoundingClientRect();
+        
+      // Jump to a specific spot on the target card
+      cat.style.left = `${cardRect.left + Math.random() * cardRect.width}px`;
+      cat.style.top = `${cardRect.top + Math.random() * cardRect.height}px`;
+        
+      // Slight rotation for playfulness
+      cat.style.transform = `rotate(${Math.random() * 30 - 15}deg)`;
+        
+      // Occasional scale change for "bouncing"
+      cat.style.transform += ` scale(${Math.random() * 0.5 + 1})`;
+
+      // Attach cat blocker to the card
+      function createCatBlocker(card) {
+        const blocker = document.createElement('div');
+        blocker.style.cssText = `
+          position: absolute;
+          top: 0;
+          left: 0;
+          width: 100%;
+          height: 100%;
+          background: rgba(0, 0, 0, 0.5);
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          color: white;
+          font-size: 16px;
+          z-index: 10;
+        `;
+        blocker.textContent = 'The cat is on here, make him go away or you can not play the game!';
+        card.style.position = 'relative';
+        card.appendChild(blocker);
+
+        // Remove blocker when cat leaves
+        return () => {
+          if (card.contains(blocker)) {
+            card.removeChild(blocker);
+          }
+        };
+      }
+
+      const removeBlocker = createCatBlocker(targetCard);
+
+      // Disable game card click when cat is on it
+      const disableClick = (e) => {
+        e.stopPropagation();
+        e.preventDefault();
+      };
+      targetCard.addEventListener('click', disableClick);
+
+      // Option to remove cat
+      cat.addEventListener('click', () => {
+        clearInterval(mischievyInterval);
+        document.body.removeChild(cat);
+        targetCard.removeEventListener('click', disableClick);
+        removeBlocker();
+      });
+    }
+
+    // Continuous mischievous movement
+    const mischievyInterval = setInterval(catMischief, 2000);
+  }
+}
+
+function createWaterEffect() {
+  const waterOverlay = document.getElementById('water-overlay');
+  waterOverlay.style.display = 'block';
+  waterOverlay.innerHTML = ''; 
+
+  setTimeout(() => {
+    waterOverlay.style.height = '100%';
+  }, 100);
+  
+  for (let i = 0; i < 10; i++) {
+    const fish = document.createElement('div');
+    fish.classList.add('fish');
+      
+    const leftPosition = Math.random() * 100;
+    const animationDuration = Math.random() * 10 + 5; 
+    const fishSize = Math.random() * 50 + 30; 
+
+    fish.style.left = `${leftPosition}%`;
+    fish.style.width = `${fishSize}px`;
+    fish.style.height = `${fishSize * 0.6}px`;
+    fish.style.animationDuration = `${animationDuration}s`;
+    fish.style.animationDelay = `-${Math.random() * animationDuration}s`;
+
+    if (Math.random() > 0.5) {
+      fish.style.transform = 'scaleX(-1)';
+    }
+
+    waterOverlay.appendChild(fish);
+  }
+
+  for (let i = 0; i < 50; i++) {
+    const bubble = document.createElement('div');
+    bubble.classList.add('bubble');
+      
+    const leftPosition = Math.random() * 100;
+    const animationDuration = Math.random() * 5 + 3; 
+    const bubbleSize = Math.random() * 10 + 5; 
+
+    bubble.style.left = `${leftPosition}%`;
+    bubble.style.top = '100%';  
+    bubble.style.width = `${bubbleSize}px`;
+    bubble.style.height = `${bubbleSize}px`;
+    bubble.style.animationDuration = `${animationDuration}s`;
+    bubble.style.animationDelay = `-${Math.random() * animationDuration}s`;
+
+    waterOverlay.appendChild(bubble);
+  }
+}
+
+document.querySelector('.code-input').addEventListener('keypress', function (e) {
+  if (e.key === 'Enter') {
+    handleSpecialCode(this.value);
+    this.value = '';
+  }
+});
+document.addEventListener('DOMContentLoaded', () => {
+  const closeSoundboardBtn = document.getElementById('close-soundboard');
+  const soundboardMenu = document.getElementById('soundboard-menu');
+  closeSoundboardBtn.addEventListener('click', () => {
+    soundboardMenu.style.display = 'none';
+  });
+  document.querySelectorAll('.sound-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const soundKey = btn.getAttribute('data-sound');
+      const audio = new Audio(soundbank[soundKey]);
+      audio.play();
+    });
+  });
+  const moreSoundboardBtn = document.querySelector('.more-soundboard-btn');
+  moreSoundboardBtn.addEventListener('click', () => {
+    window.open('https://www.mellekoster.nl/soundboard/', '_blank');
+  });
+});
+document.querySelector('.search-input').addEventListener('input', function () {
+  const searchTerm = this.value.toLowerCase();
+  const gameCards = document.querySelectorAll('.game-card');
+  gameCards.forEach(card => {
+    const gameTitle = card.querySelector('.game-title').textContent.toLowerCase();
+    card.style.display = gameTitle.includes(searchTerm) ? 'block' : 'none';
+    if (searchTerm === 'vex') {
+      window.open(urlVexGames, '_blank');
+    }
+  });
+});
+
+document.addEventListener('keydown', function(e) {
+  // Check for Ctrl+Shift+S
+  if (e.ctrlKey && e.shiftKey && e.key === 'S') {
+    e.preventDefault(); // Prevent default browser save dialog
+    const soundboardMenu = document.getElementById('soundboard-menu');
+    soundboardMenu.style.display = soundboardMenu.style.display === 'none' ? 'block' : 'none';
+  }
+});
+
+</script>
+</body>
+</html>
